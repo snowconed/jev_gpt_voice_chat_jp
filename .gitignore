@@ -1,0 +1,61 @@
+# Credentials belong in the operating-system environment.
+.env*
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+credentials*.json
+secrets*.json
+api_keys*.json
+config.local.*
+
+# Local conversations, diagnostics and process ownership records.
+data/
+data_*/
+.runtime/
+validation/
+logs/
+results/
+reports/
+*.log
+*.jsonl
+*.sqlite*
+*.db
+
+# Environments, dependencies and downloaded speech engines/models.
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage*
+htmlcov/
+node_modules/
+models/
+build/
+dist/
+*.egg-info/
+
+# Generated audio and exports; regenerate fillers on each installation.
+assets/fillers/*
+!assets/fillers/README.txt
+*.pcm
+*.wav
+*.mp3
+*.flac
+*.ogg
+*.m4a
+*.zip
+*.7z
+*.7z.*
+*.part
+
+# Editor / OS local state.
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini

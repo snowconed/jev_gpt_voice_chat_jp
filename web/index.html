@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>音声チャット</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" type="module"></script>
+</head>
+<body>
+  <main class="shell">
+    <header class="page-header">
+      <div class="eyebrow">VOICE CHAT STARTER</div>
+      <h1>声で、気軽に話す</h1>
+      <p class="intro">今日の出来事や、ちょっと気になったこと。話したいことから、いつもの言葉で話しかけてください。</p>
+    </header>
+
+    <section class="conversation-card" aria-label="音声対話の操作">
+      <div class="toolbar">
+        <div class="field role-field" hidden>
+          <label for="role">会話の種類</label>
+          <select id="role" disabled><option value="chat">雑談</option></select>
+        </div>
+        <span class="chat-kind">日本語の雑談</span>
+        <div class="voice-note"><span class="voice-dot" aria-hidden="true"></span><span id="voice-label">同じ声でお話しします</span></div>
+      </div>
+
+      <div class="listening-area">
+        <div class="voice-orb" id="voice-orb" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="status-line"><span class="status-dot" id="status-dot" aria-hidden="true"></span><p id="status" role="status" aria-live="polite">設定を読み込んでいます</p></div>
+        <p class="connection-hint" id="connection-hint">開始するとマイクの使用許可を求めます。</p>
+        <div id="filler-options" class="filler-options" hidden>
+          <label for="filler-enabled"><input id="filler-enabled" type="checkbox" checked disabled aria-describedby="filler-help">返答前に短いフィラーを入れる</label>
+          <p id="filler-help">「ええと」などをすぐに再生し、その間に返答を準備します。対話を始める前に切り替えられます。</p>
+        </div>
+        <p id="filler-status" class="filler-status" role="status" aria-live="polite" hidden></p>
+        <div class="controls">
+          <button id="start" class="primary" type="button" disabled>音声対話を始める</button>
+          <button id="stop" class="secondary" type="button" disabled>対話を終了する</button>
+        </div>
+        <div class="audio-check">
+          <button id="test-audio" class="audio-test-button" type="button">音声をテスト</button>
+          <span id="audio-test-result" role="status" aria-live="polite">マイク・APIを使わず、2つの短い確認音を鳴らします。</span>
+        </div>
+        <p class="disclosure">お聞きいただく声はAIが生成した音声です。</p>
+      </div>
+      <div id="error" class="error-message" role="alert" hidden></div>
+    </section>
+
+    <section class="caption-grid" aria-label="現在の音声字幕">
+      <article class="caption-card"><h2>あなたの声</h2><p id="input-caption" class="caption placeholder">話した内容がここに表示されます。</p></article>
+      <article class="caption-card"><h2>AIの声</h2><p id="output-caption" class="caption placeholder">AIの音声字幕がここに表示されます。</p></article>
+    </section>
+
+    <div class="microphone-check"><meter id="microphone-level" min="0" max="1" value="0" aria-label="マイクの入力音量"></meter><span id="microphone-status">マイクは停止しています。</span></div>
+
+    <section class="processing-panel" aria-labelledby="processing-title">
+      <div class="processing-heading"><h2 id="processing-title">会話の進み具合</h2><span id="processing-mode">接続後に方式を表示します</span></div>
+      <p class="processing-note">聞き取りと返答の準備は並行して進みます。表示時間は次の確認や再判定までの目安で、返答が完成するまでの予測ではありません。</p>
+      <div class="processing-grid" aria-live="off">
+        <article id="processing-turn" class="processing-card" aria-labelledby="processing-turn-title">
+          <h3 id="processing-turn-title">ターン判断</h3>
+          <p id="processing-turn-label" class="processing-label">開始前</p>
+          <p id="processing-turn-detail" class="processing-detail">対話を始めると、話し終わりをどう判断しているか表示します。</p>
+          <p id="processing-turn-timing" class="processing-timing" hidden></p>
+        </article>
+        <article id="processing-reply" class="processing-card" aria-labelledby="processing-reply-title">
+          <h3 id="processing-reply-title">応答準備</h3>
+          <p id="processing-reply-label" class="processing-label">待機中</p>
+          <p id="processing-reply-detail" class="processing-detail">返答を考える段階と、声を準備する段階を表示します。</p>
+          <p id="processing-reply-timing" class="processing-timing" hidden></p>
+        </article>
+      </div>
+      <div class="processing-recent" aria-live="off">
+        <h3>直近の判断・進行</h3>
+        <p id="processing-recent-empty" class="processing-detail">判断や段階の変化があると、ここに表示されます。</p>
+        <ol id="processing-recent-list" hidden></ol>
+      </div>
+      <p id="processing-announcement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
+    </section>
+
+    <section class="history-card" aria-labelledby="history-title">
+      <div class="section-heading"><h2 id="history-title">対話の記録</h2><span>内容を振り返る</span></div>
+      <div id="messages" class="messages" role="log" aria-live="polite" aria-relevant="additions text"><p class="empty-state">対話を始めると、ここに記録が表示されます。</p></div>
+      <details class="text-fallback">
+        <summary>文字で伝える</summary>
+        <form id="text-form">
+          <label class="sr-only" for="text-input">伝えたい内容</label>
+          <textarea id="text-input" rows="2" placeholder="音声で伝えにくい内容を入力できます。" disabled maxlength="2000"></textarea>
+          <button id="send-text" class="secondary" type="submit" disabled>送信</button>
+        </form>
+      </details>
+    </section>
+    <footer>マイクは対話中だけ使用します。終了すると録音と音声の再生が止まります。<span id="server-version" class="ui-version">音声版を確認中</span></footer>
+  </main>
+</body>
+</html>

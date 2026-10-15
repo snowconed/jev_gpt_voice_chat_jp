@@ -1,0 +1,11 @@
+{
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "low",
+  "service_tier": "ultrafast",
+  "prompt_file": "prompts/chat_ja.txt",
+  "greeting": "こんにちは。今日はどんなことを話しましょうか？",
+  "max_output_tokens": 2000,
+  "timeout_seconds": 20,
+  "attempt_timeout_seconds": 8,
+  "max_retries": 1
+}

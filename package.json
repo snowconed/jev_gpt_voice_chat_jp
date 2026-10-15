@@ -1,0 +1,17 @@
+{
+  "name": "jev-voice-chat",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "description": "Optional browser regression tests for the local Jev voice chat app",
+  "scripts": {
+    "test:browser": "node --test tests/test_browser_audio.cjs tests/test_restart_ui.cjs tests/test_processing_ui.cjs tests/test_filler_ui.cjs",
+    "test:audio": "node --test tests/test_browser_audio.cjs tests/test_restart_ui.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
